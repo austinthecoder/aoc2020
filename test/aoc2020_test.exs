@@ -11,4 +11,8 @@ defmodule Aoc2020Test do
     answer = Aoc2020.determine_expense_report_magic_number("test/expense_report.txt", 3)
     assert answer == 9_210_402
   end
+
+  test "day 2, part 1" do
+    assert Aoc2020.count_valid_passwords("test/passwords.txt") == 546
+  end
 end
