@@ -8,10 +8,10 @@ defmodule Aoc2020 do
     |> Enum.reduce(&(&1 * &2))
   end
 
-  def count_valid_passwords(passwords_path) do
+  def count_valid_passwords(passwords_path, policy_type) do
     File.read!(passwords_path)
     |> String.split("\n", trim: true)
-    |> Enum.count(&password_valid?/1)
+    |> Enum.count(&password_valid?(&1, policy_type))
   end
 
   ##########
@@ -24,12 +24,16 @@ defmodule Aoc2020 do
     for a <- entries, b <- entries, c <- entries, a + b + c == 2020, do: [a, b, c]
   end
 
-  defp password_valid?(policy_and_password) do
+  defp password_valid?(policy_and_password, policy_type) do
     regex = ~r/(\d+)-(\d+)\s([a-z]):\s([a-z]+)/
-    [[_, low, high, letter, password]] = Regex.scan(regex, policy_and_password)
+    [[_, first_number, second_number, letter, password]] = Regex.scan(regex, policy_and_password)
 
-    range = String.to_integer(low)..String.to_integer(high)
-    letter_count = String.split(password, "", trim: true) |> Enum.count(&(&1 == letter))
-    Enum.member?(range, letter_count)
+    case policy_type do
+      "sled_rental" ->
+        low = String.to_integer(first_number)
+        high = String.to_integer(second_number)
+        letter_count = String.split(password, "", trim: true) |> Enum.count(&(&1 == letter))
+        Enum.member?(low..high, letter_count)
+    end
   end
 end

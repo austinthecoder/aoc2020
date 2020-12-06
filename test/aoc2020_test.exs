@@ -13,6 +13,6 @@ defmodule Aoc2020Test do
   end
 
   test "day 2, part 1" do
-    assert Aoc2020.count_valid_passwords("test/passwords.txt") == 546
+    assert Aoc2020.count_valid_passwords("test/passwords.txt", "sled_rental") == 546
   end
 end
