@@ -2,7 +2,9 @@ defmodule Aoc2020Test do
   use ExUnit.Case
   doctest Aoc2020
 
-  test "greets the world" do
-    assert Aoc2020.hello() == :world
+  test "day 1" do
+    answer = Aoc2020.determine_expense_report_magic_number("test/expense_report.txt")
+
+    assert answer == 996_996
   end
 end
