@@ -28,12 +28,18 @@ defmodule Aoc2020 do
     regex = ~r/(\d+)-(\d+)\s([a-z]):\s([a-z]+)/
     [[_, first_number, second_number, letter, password]] = Regex.scan(regex, policy_and_password)
 
+    first_number = String.to_integer(first_number)
+    second_number = String.to_integer(second_number)
+
     case policy_type do
       "sled_rental" ->
-        low = String.to_integer(first_number)
-        high = String.to_integer(second_number)
-        letter_count = String.split(password, "", trim: true) |> Enum.count(&(&1 == letter))
-        Enum.member?(low..high, letter_count)
+        letters = String.split(password, "", trim: true)
+        letter_count = letters |> Enum.count(&(&1 == letter))
+        Enum.member?(first_number..second_number, letter_count)
+
+      "toboggan_corporate" ->
+        positions = [first_number, second_number]
+        Enum.count(positions, fn position -> String.at(password, position - 1) == letter end) == 1
     end
   end
 end
