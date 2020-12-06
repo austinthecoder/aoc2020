@@ -1,21 +1,22 @@
 defmodule Aoc2020 do
-  def determine_expense_report_magic_number(expense_report_path) do
+  def determine_expense_report_magic_number(expense_report_path, count) do
     entries =
       File.read!(expense_report_path)
       |> String.split()
       |> Enum.map(&String.to_integer/1)
 
-    [entry1, entry2] =
-      entries
-      |> stream_pairs()
-      |> Enum.find(fn [x, y] -> x + y == 2020 end)
+    found_entries =
+      find_entries(entries, count)
+      |> List.first()
 
-    entry1 * entry2
+    Enum.reduce(found_entries, fn entry, acc -> entry * acc end)
   end
 
-  defp stream_pairs([]), do: []
+  defp find_entries(entries, 2) do
+    for a <- entries, b <- entries, a + b == 2020, do: [a, b]
+  end
 
-  defp stream_pairs([head | tail]) do
-    Stream.map(tail, fn item -> [head, item] end) |> Stream.concat(stream_pairs(tail))
+  defp find_entries(entries, 3) do
+    for a <- entries, b <- entries, c <- entries, a + b + c == 2020, do: [a, b, c]
   end
 end
