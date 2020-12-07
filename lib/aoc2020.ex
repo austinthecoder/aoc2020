@@ -29,19 +29,63 @@ defmodule Aoc2020 do
     |> Enum.count(&(&1 == "#"))
   end
 
-  def count_valid_passports(passports_path) do
-    required_fields = ["byr:", "iyr:", "eyr:", "hgt:", "hcl:", "ecl:", "pid:"]
+  def count_valid_passports(passports_path, validate_fields?) do
+    is_a_year_in? = fn value, range ->
+      if Regex.match?(~r/\A\d{4}\z/, value) do
+        value = String.to_integer(value)
+        Enum.member?(range, value)
+      end
+    end
 
-    passports =
+    hgt_valid? = fn hgt ->
+      captures = Regex.run(~r/\A(?<value>\d+)(?<unit>cm|in)\z/, hgt, capture: :all_but_first)
+
+      if captures do
+        value = String.to_integer(Enum.at(captures, 0))
+
+        range =
+          case Enum.at(captures, 1) do
+            "cm" -> 150..193
+            "in" -> 59..76
+          end
+
+        Enum.member?(range, value)
+      end
+    end
+
+    build_passport = fn line ->
+      to_map = fn [_, key, value], map ->
+        Map.put(map, String.to_atom(key), value)
+      end
+
+      Regex.scan(~r/([a-z]{3}):([^\s]+)/, line)
+      |> Enum.reduce(%{}, to_map)
+    end
+
+    required_fields_present? = fn passport ->
+      Enum.all?([:byr, :iyr, :eyr, :hgt, :hcl, :ecl, :pid], &passport[&1])
+    end
+
+    fields_valid? = fn passport ->
+      is_a_year_in?.(passport.byr, 1920..2002) &&
+        is_a_year_in?.(passport.iyr, 2010..2020) &&
+        is_a_year_in?.(passport.eyr, 2020..2030) &&
+        hgt_valid?.(passport.hgt) &&
+        Regex.match?(~r/\A#[0-9a-f]{6}\z/, passport.hcl) &&
+        Regex.match?(~r/\A(amb|blu|brn|gry|grn|hzl|oth)\z/, passport.ecl) &&
+        Regex.match?(~r/\A\d{9}\z/, passport.pid)
+    end
+
+    valid_passports =
       File.read!(passports_path)
       |> String.trim()
       |> String.split("\n\n")
+      |> Enum.map(build_passport)
+      |> Enum.filter(required_fields_present?)
 
-    valid? = fn passport ->
-      Enum.all?(required_fields, &String.contains?(passport, &1))
-    end
-
-    Enum.count(passports, valid?)
+    if validate_fields?,
+      do: Enum.count(valid_passports, fields_valid?),
+      else: Enum.count(valid_passports)
   end
 
   ##########

@@ -43,6 +43,10 @@ defmodule Aoc2020Test do
   end
 
   test "day 4, part 1" do
-    assert Aoc2020.count_valid_passports("test/passports.txt") == 200
+    assert Aoc2020.count_valid_passports("test/passports.txt", false) == 200
+  end
+
+  test "day 4, part 2" do
+    assert Aoc2020.count_valid_passports("test/passports.txt", true) == 116
   end
 end
