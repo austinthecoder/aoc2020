@@ -1,5 +1,5 @@
 defmodule Aoc2020 do
-  alias Aoc2020.{Grid, Passport, PasswordWithPolicy}
+  alias Aoc2020.{BoardingPass, Grid, Passport, PasswordWithPolicy}
 
   def determine_expense_report_magic_number(expense_report, count) do
     expense_report
@@ -40,7 +40,29 @@ defmodule Aoc2020 do
       else: Enum.count(valid_passports)
   end
 
+  def highest_boarding_pass_seat_id(batch_boarding_passes) do
+    calc_seat_ids(batch_boarding_passes) |> Enum.max()
+  end
+
+  def find_my_boarding_pass_seat_id(batch_boarding_passes) do
+    gap? = fn [seat_id1, seat_id2] ->
+      seat_id2 - seat_id1 == 2
+    end
+
+    calc_seat_ids(batch_boarding_passes)
+    |> Enum.sort()
+    |> Enum.chunk_every(2, 1)
+    |> Enum.find(gap?)
+    |> Enum.at(0)
+    |> Kernel.+(1)
+  end
+
   ##########
+
+  defp calc_seat_ids(batch_boarding_passes) do
+    String.split(batch_boarding_passes)
+    |> Enum.map(&BoardingPass.calc_seat_id/1)
+  end
 
   defp find_entry_lists_that_sum_to_2020(entries, 2) do
     for a <- entries, b <- entries, a + b == 2020, do: [a, b]

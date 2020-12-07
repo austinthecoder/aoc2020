@@ -53,6 +53,16 @@ defmodule Aoc2020Test do
     assert answer == 116
   end
 
+  test "day 5, part 1" do
+    answer = read_file("boarding_passes.txt") |> Aoc2020.highest_boarding_pass_seat_id()
+    assert answer == 871
+  end
+
+  test "day 5, part 2" do
+    answer = read_file("boarding_passes.txt") |> Aoc2020.find_my_boarding_pass_seat_id()
+    assert answer == 640
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end
