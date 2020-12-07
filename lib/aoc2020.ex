@@ -57,6 +57,30 @@ defmodule Aoc2020 do
     |> Kernel.+(1)
   end
 
+  def customs_declaration_magic_number(customs_declaration_form_answers, type) do
+    reducer =
+      case type do
+        :anyone -> &MapSet.union/2
+        :everyone -> &MapSet.intersection/2
+      end
+
+    to_answer_set = fn line ->
+      String.split(line, "", trim: true) |> MapSet.new()
+    end
+
+    to_yes_counts = fn group ->
+      String.split(group, "\n")
+      |> Enum.map(to_answer_set)
+      |> Enum.reduce(reducer)
+      |> Enum.count()
+    end
+
+    customs_declaration_form_answers
+    |> String.split("\n\n")
+    |> Enum.map(to_yes_counts)
+    |> Enum.sum()
+  end
+
   ##########
 
   defp calc_seat_ids(batch_boarding_passes) do

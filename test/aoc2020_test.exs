@@ -63,6 +63,22 @@ defmodule Aoc2020Test do
     assert answer == 640
   end
 
+  test "day 6, part 1" do
+    answer =
+      read_file("customs_declaration_form_answers.txt")
+      |> Aoc2020.customs_declaration_magic_number(:anyone)
+
+    assert answer == 6297
+  end
+
+  test "day 6, part 2" do
+    answer =
+      read_file("customs_declaration_form_answers.txt")
+      |> Aoc2020.customs_declaration_magic_number(:everyone)
+
+    assert answer == 3158
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end
