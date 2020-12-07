@@ -19,4 +19,8 @@ defmodule Aoc2020Test do
   test "day 2, part 2" do
     assert Aoc2020.count_valid_passwords("test/passwords.txt", "toboggan_corporate") == 275
   end
+
+  test "day 3, part 1" do
+    assert Aoc2020.count_trees_encountered("test/map.txt") == 225
+  end
 end
