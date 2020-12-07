@@ -14,13 +14,13 @@ defmodule Aoc2020 do
     |> Enum.count(&password_valid?(&1, policy_type))
   end
 
-  def count_trees_encountered(map_path) do
+  def count_trees_encountered(map_path, slope) do
     map =
       File.read!(map_path)
       |> String.split()
       |> Enum.map(&String.split(&1, "", trim: true))
 
-    positions = traverse(map, [0, 0], [3, 1])
+    positions = traverse(map, [0, 0], slope)
 
     squares_encountered =
       Enum.map(positions, fn [col, row] -> Enum.at(Enum.at(map, row), col) end)
@@ -60,14 +60,14 @@ defmodule Aoc2020 do
   defp traverse(map, curr_position, slope) do
     [next_col, next_row] = move(map, curr_position, slope)
 
-    tail =
+    next_positions =
       if next_row < Enum.count(map) do
         traverse(map, [next_col, next_row], slope)
       else
         []
       end
 
-    [curr_position | tail]
+    [curr_position | next_positions]
   end
 
   defp move(map, [curr_col, curr_row], [col_distance, row_distance]) do

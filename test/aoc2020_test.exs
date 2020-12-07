@@ -21,6 +21,24 @@ defmodule Aoc2020Test do
   end
 
   test "day 3, part 1" do
-    assert Aoc2020.count_trees_encountered("test/map.txt") == 225
+    assert Aoc2020.count_trees_encountered("test/map.txt", [3, 1]) == 225
+  end
+
+  test "day 3, part 2" do
+    map_path = "test/map.txt"
+
+    slopes_list = [
+      [1, 1],
+      [3, 1],
+      [5, 1],
+      [7, 1],
+      [1, 2]
+    ]
+
+    answer =
+      Enum.map(slopes_list, &Aoc2020.count_trees_encountered(map_path, &1))
+      |> Enum.reduce(&(&1 * &2))
+
+    assert answer == 1_115_775_000
   end
 end
