@@ -29,6 +29,21 @@ defmodule Aoc2020 do
     |> Enum.count(&(&1 == "#"))
   end
 
+  def count_valid_passports(passports_path) do
+    required_fields = ["byr:", "iyr:", "eyr:", "hgt:", "hcl:", "ecl:", "pid:"]
+
+    passports =
+      File.read!(passports_path)
+      |> String.trim()
+      |> String.split("\n\n")
+
+    valid? = fn passport ->
+      Enum.all?(required_fields, &String.contains?(passport, &1))
+    end
+
+    Enum.count(passports, valid?)
+  end
+
   ##########
 
   defp find_entry_lists_that_sum_to_2020(entries, 2) do
