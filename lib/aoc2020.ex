@@ -20,7 +20,7 @@ defmodule Aoc2020 do
       |> String.split()
       |> Enum.map(&String.split(&1, "", trim: true))
 
-    positions = traverse(map, [0, 0])
+    positions = traverse(map, [0, 0], [3, 1])
 
     squares_encountered =
       Enum.map(positions, fn [col, row] -> Enum.at(Enum.at(map, row), col) end)
@@ -57,17 +57,24 @@ defmodule Aoc2020 do
     end
   end
 
-  defp traverse(map, curr_position) do
-    [map, next_position] = move(map, curr_position)
-    next_positions = if next_position, do: traverse(map, next_position), else: []
-    [curr_position | next_positions]
+  defp traverse(map, curr_position, slope) do
+    [next_col, next_row] = move(map, curr_position, slope)
+
+    tail =
+      if next_row < Enum.count(map) do
+        traverse(map, [next_col, next_row], slope)
+      else
+        []
+      end
+
+    [curr_position | tail]
   end
 
-  defp move(map, [curr_col, curr_row]) do
+  defp move(map, [curr_col, curr_row], [col_distance, row_distance]) do
     map_width = Enum.count(Enum.at(map, 0))
-    next_col = rem(curr_col + 3, map_width)
-    next_row = curr_row + 1
+    next_col = rem(curr_col + col_distance, map_width)
+    next_row = curr_row + row_distance
 
-    if next_row >= Enum.count(map), do: [map, nil], else: [map, [next_col, next_row]]
+    [next_col, next_row]
   end
 end
