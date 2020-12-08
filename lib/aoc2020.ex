@@ -85,6 +85,10 @@ defmodule Aoc2020 do
     BagRules.from_batch(batch_bag_rules) |> BagRules.count_ancestors(color)
   end
 
+  def count_descendant_bags(batch_bag_rules, color) do
+    BagRules.from_batch(batch_bag_rules) |> BagRules.count_descendants(color)
+  end
+
   ##########
 
   defp calc_seat_ids(batch_boarding_passes) do
