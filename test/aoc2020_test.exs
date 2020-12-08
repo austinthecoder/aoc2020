@@ -89,6 +89,11 @@ defmodule Aoc2020Test do
     assert answer == 4165
   end
 
+  test "day 8, part 1" do
+    answer = read_file("boot_code.txt") |> Aoc2020.run_program()
+    assert answer == 1217
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end
