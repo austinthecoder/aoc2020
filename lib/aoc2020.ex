@@ -1,5 +1,5 @@
 defmodule Aoc2020 do
-  alias Aoc2020.{BoardingPass, Grid, Passport, PasswordWithPolicy}
+  alias Aoc2020.{BagRules, BoardingPass, Grid, Passport, PasswordWithPolicy}
 
   def determine_expense_report_magic_number(expense_report, count) do
     expense_report
@@ -79,6 +79,10 @@ defmodule Aoc2020 do
     |> String.split("\n\n")
     |> Enum.map(to_yes_counts)
     |> Enum.sum()
+  end
+
+  def count_ancestor_bags(batch_bag_rules, color) do
+    BagRules.from_batch(batch_bag_rules) |> BagRules.count_ancestors(color)
   end
 
   ##########

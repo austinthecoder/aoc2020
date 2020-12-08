@@ -79,6 +79,11 @@ defmodule Aoc2020Test do
     assert answer == 3158
   end
 
+  test "day 7, part 1" do
+    answer = read_file("bag_rules.txt") |> Aoc2020.count_ancestor_bags("shiny gold")
+    assert answer == 302
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end
