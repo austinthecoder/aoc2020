@@ -90,7 +90,7 @@ defmodule Aoc2020 do
   end
 
   def run_program(code) do
-    Program.from_string(code) |> Program.execute([], 0, 0)
+    Program.from_string(code) |> Program.run()
   end
 
   ##########

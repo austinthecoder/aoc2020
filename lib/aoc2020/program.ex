@@ -1,35 +1,28 @@
 defmodule Aoc2020.Program do
-  defmodule Instruction do
-    @regex ~r/\A(.{3})\s([+-]\d+)\z/
-
-    def from_string(string) do
-      [operation, argument] = Regex.run(@regex, string, capture: :all_but_first)
-      [operation, String.to_integer(argument)]
-    end
-
-    def execute(["acc", quantity], accumulator, line), do: [accumulator + quantity, line + 1]
-    def execute(["jmp", quantity], accumulator, line), do: [accumulator, line + quantity]
-    def execute(["nop", _quantity], accumulator, line), do: [accumulator, line + 1]
-  end
+  alias Aoc2020.Program.{State, Instruction}
 
   def from_string(string) do
     String.split(string, "\n") |> Enum.map(&Instruction.from_string/1)
   end
 
-  def execute(instructions, executed_lines, accumulator, line) do
-    if Enum.member?(executed_lines, line) do
-      accumulator
-    else
-      [accumulator, next_line] =
-        Enum.at(instructions, line)
-        |> Instruction.execute(accumulator, line)
+  def run(program) do
+    run(program, State.new())
+  end
 
-      execute(
-        instructions,
-        List.insert_at(executed_lines, -1, line),
-        accumulator,
-        next_line
-      )
+  defp run(program, state) do
+    [stack_trace, _, instruction_index] = state
+
+    instruction = Enum.at(program, instruction_index)
+
+    if instruction do
+      if !Enum.member?(stack_trace, instruction_index) do
+        state = State.operate(state, instruction)
+        run(program, state)
+      else
+        {:infinite_loop, state}
+      end
+    else
+      {:done, state}
     end
   end
 end
