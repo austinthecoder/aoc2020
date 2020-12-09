@@ -93,6 +93,31 @@ defmodule Aoc2020 do
     Program.from_string(code) |> Program.run()
   end
 
+  def fix_and_run_program(code) do
+    program = Program.from_string(code)
+
+    add_modified_program = fn {[operation, quantity], instruction_index}, programs ->
+      case operation do
+        :jmp ->
+          programs ++ [List.replace_at(program, instruction_index, [:nop, quantity])]
+
+        :nop ->
+          programs ++ [List.replace_at(program, instruction_index, [:jmp, quantity])]
+
+        _ ->
+          programs
+      end
+    end
+
+    done? = fn {result, _state} -> result == :done end
+
+    program
+    |> Enum.with_index()
+    |> Enum.reduce([], add_modified_program)
+    |> Enum.map(&Program.run/1)
+    |> Enum.find(done?)
+  end
+
   ##########
 
   defp calc_seat_ids(batch_boarding_passes) do

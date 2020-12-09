@@ -96,6 +96,13 @@ defmodule Aoc2020Test do
     assert accumulator == 1217
   end
 
+  test "day 8, part 2" do
+    {result, [_, accumulator, _]} = read_file("boot_code.txt") |> Aoc2020.fix_and_run_program()
+
+    assert result == :done
+    assert accumulator == 501
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end
