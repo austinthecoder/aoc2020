@@ -90,17 +90,13 @@ defmodule Aoc2020Test do
   end
 
   test "day 8, part 1" do
-    {result, [_, accumulator, _]} = read_file("boot_code.txt") |> Aoc2020.run_program()
-
-    assert result == :infinite_loop
-    assert accumulator == 1217
+    answer = read_file("boot_code.txt") |> Aoc2020.run_program()
+    assert answer == {:infinite_loop, 1217}
   end
 
   test "day 8, part 2" do
-    {result, [_, accumulator, _]} = read_file("boot_code.txt") |> Aoc2020.fix_and_run_program()
-
-    assert result == :done
-    assert accumulator == 501
+    answer = read_file("boot_code.txt") |> Aoc2020.fix_and_run_program()
+    assert answer == {:done, 501}
   end
 
   defp read_file(name) do
