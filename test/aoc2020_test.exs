@@ -99,6 +99,14 @@ defmodule Aoc2020Test do
     assert answer == {:done, 501}
   end
 
+  test "day 9, part 1" do
+    answer = read_file("example_xmas_data.txt") |> Aoc2020.find_invalid_number(5)
+    assert answer == 127
+
+    answer = read_file("xmas_data.txt") |> Aoc2020.find_invalid_number(25)
+    assert answer == 104054607
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end

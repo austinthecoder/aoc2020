@@ -118,6 +118,31 @@ defmodule Aoc2020 do
     |> Enum.find(done?)
   end
 
+  def find_invalid_number(xmas_data, preamble) do
+    numbers = String.split(xmas_data, "\n") |> Enum.map(&String.to_integer/1)
+    last_index = Enum.count(numbers) - 1
+
+    invalid? = fn index ->
+      number = Enum.at(numbers, index)
+      prev_indexes = (index - preamble)..(index - 1)
+
+      list =
+        for(
+          prev_index1 <- prev_indexes,
+          prev_index2 <- prev_indexes,
+          prev_index1 != prev_index2 &&
+            Enum.at(numbers, prev_index1) + Enum.at(numbers, prev_index2) == number,
+          do: true
+        )
+
+      Enum.empty?(list)
+    end
+
+    invalid_index = Enum.find(preamble..last_index, invalid?)
+
+    Enum.at(numbers, invalid_index)
+  end
+
   ##########
 
   defp calc_seat_ids(batch_boarding_passes) do
