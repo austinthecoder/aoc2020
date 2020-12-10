@@ -107,6 +107,14 @@ defmodule Aoc2020Test do
     assert answer == 104_054_607
   end
 
+  test "day 9, part 2" do
+    answer = read_file("example_xmas_data.txt") |> Aoc2020.find_xmas_encryption_weakness(5)
+    assert answer == 62
+
+    answer = read_file("xmas_data.txt") |> Aoc2020.find_xmas_encryption_weakness(25)
+    assert answer == 13_935_797
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end

@@ -22,4 +22,24 @@ defmodule Aoc2020.XmasNumbers do
 
     if valid?, do: find_invalid(numbers, preamble, index + 1), else: number
   end
+
+  def find_encryption_weakness(numbers, invalid_number),
+    do: find_encryption_weakness(numbers, invalid_number, 0, 0)
+
+  ##########
+
+  defp find_encryption_weakness(numbers, invalid_number, index_start, index_stop) do
+    sub_numbers = Enum.slice(numbers, index_start..index_stop)
+    sum = sub_numbers |> Enum.sum()
+
+    if sum < invalid_number do
+      find_encryption_weakness(numbers, invalid_number, index_start, index_stop + 1)
+    else
+      if sum > invalid_number do
+        find_encryption_weakness(numbers, invalid_number, index_start + 1, index_stop)
+      else
+        Enum.min(sub_numbers) + Enum.max(sub_numbers)
+      end
+    end
+  end
 end

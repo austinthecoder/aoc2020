@@ -122,6 +122,12 @@ defmodule Aoc2020 do
     XmasNumbers.from_string(xmas_data) |> XmasNumbers.find_invalid(preamble)
   end
 
+  def find_xmas_encryption_weakness(xmas_data, preamble) do
+    xmas_numbers = XmasNumbers.from_string(xmas_data)
+    invalid_number = XmasNumbers.find_invalid(xmas_numbers, preamble)
+    XmasNumbers.find_encryption_weakness(xmas_numbers, invalid_number)
+  end
+
   ##########
 
   defp calc_seat_ids(batch_boarding_passes) do
