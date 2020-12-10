@@ -1,12 +1,20 @@
 defmodule Aoc2020 do
-  alias Aoc2020.{BagRules, BoardingPass, Grid, Passport, PasswordWithPolicy, Program, XmasNumbers}
+  alias Aoc2020.{
+    Combinations,
+    BagRules,
+    BoardingPass,
+    Grid,
+    Passport,
+    PasswordWithPolicy,
+    Program,
+    XmasNumbers
+  }
 
   def determine_expense_report_magic_number(expense_report, count) do
     expense_report
     |> String.split()
     |> Enum.map(&String.to_integer/1)
-    |> find_entry_lists_that_sum_to_2020(count)
-    |> List.first()
+    |> find_entry_combination_that_sums_to(count, 2020)
     |> Enum.reduce(&(&1 * &2))
   end
 
@@ -135,11 +143,16 @@ defmodule Aoc2020 do
     |> Enum.map(&BoardingPass.calc_seat_id/1)
   end
 
-  defp find_entry_lists_that_sum_to_2020(entries, 2) do
-    for a <- entries, b <- entries, a + b == 2020, do: [a, b]
+  defp find_entry_combination_that_sums_to(entries, 2, sum) do
+    sums_to? = fn [entry1, entry2] ->
+      entry1 + entry2 == sum
+    end
+
+    Combinations.build(entries) |> Enum.find(sums_to?)
   end
 
-  defp find_entry_lists_that_sum_to_2020(entries, 3) do
-    for a <- entries, b <- entries, c <- entries, a + b + c == 2020, do: [a, b, c]
+  defp find_entry_combination_that_sums_to(entries, 3, sum) do
+    for(a <- entries, b <- entries, c <- entries, a + b + c == sum, do: [a, b, c])
+    |> List.first()
   end
 end
