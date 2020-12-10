@@ -4,6 +4,7 @@ defmodule Aoc2020 do
     BagRules,
     BoardingPass,
     Grid,
+    JoltageRatings,
     Passport,
     PasswordWithPolicy,
     Program,
@@ -134,6 +135,11 @@ defmodule Aoc2020 do
     xmas_numbers = XmasNumbers.from_string(xmas_data)
     invalid_number = XmasNumbers.find_invalid(xmas_numbers, preamble)
     XmasNumbers.find_encryption_weakness(xmas_numbers, invalid_number)
+  end
+
+  def gather_joltage_distribution(joltage_adapter_data) do
+    JoltageRatings.from_string(joltage_adapter_data)
+    |> JoltageRatings.gather_distribution()
   end
 
   ##########

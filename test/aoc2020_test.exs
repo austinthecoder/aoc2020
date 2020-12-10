@@ -115,6 +115,12 @@ defmodule Aoc2020Test do
     assert answer == 13_935_797
   end
 
+  test "day 10, part 1" do
+    distribution = read_file("joltage_adapters.txt") |> Aoc2020.gather_joltage_distribution()
+    answer = distribution[1] * distribution[3]
+    assert answer == 2100
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end
