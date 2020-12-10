@@ -1,5 +1,5 @@
 defmodule Aoc2020 do
-  alias Aoc2020.{BagRules, BoardingPass, Grid, Passport, PasswordWithPolicy, Program}
+  alias Aoc2020.{BagRules, BoardingPass, Grid, Passport, PasswordWithPolicy, Program, XmasNumbers}
 
   def determine_expense_report_magic_number(expense_report, count) do
     expense_report
@@ -118,29 +118,8 @@ defmodule Aoc2020 do
     |> Enum.find(done?)
   end
 
-  def find_invalid_number(xmas_data, preamble) do
-    numbers = String.split(xmas_data, "\n") |> Enum.map(&String.to_integer/1)
-    last_index = Enum.count(numbers) - 1
-
-    invalid? = fn index ->
-      number = Enum.at(numbers, index)
-      prev_indexes = (index - preamble)..(index - 1)
-
-      list =
-        for(
-          prev_index1 <- prev_indexes,
-          prev_index2 <- prev_indexes,
-          prev_index1 != prev_index2 &&
-            Enum.at(numbers, prev_index1) + Enum.at(numbers, prev_index2) == number,
-          do: true
-        )
-
-      Enum.empty?(list)
-    end
-
-    invalid_index = Enum.find(preamble..last_index, invalid?)
-
-    Enum.at(numbers, invalid_index)
+  def find_xmas_invalid_number(xmas_data, preamble) do
+    XmasNumbers.from_string(xmas_data) |> XmasNumbers.find_invalid(preamble)
   end
 
   ##########
