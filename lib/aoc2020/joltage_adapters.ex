@@ -21,9 +21,10 @@ defmodule Aoc2020.JoltageRatings do
     device_rating = Enum.at(joltage_ratings, -1) + 3
     ratings = [outlet_rating | joltage_ratings] ++ [device_rating]
 
-    last_index = Enum.count(ratings) - 1
+    # last_index = Enum.count(ratings) - 1
 
-    count_arrangements(ratings, 0, last_index)
+    # count_arrangements(ratings, 0, last_index)
+    cnt2(ratings) + 1
   end
 
   ##########
@@ -56,6 +57,31 @@ defmodule Aoc2020.JoltageRatings do
       end
     else
       count1
+    end
+  end
+
+  def cnt2([]), do: 0
+
+  def cnt2(ratings) do
+    ratings_size = Enum.count(ratings)
+
+    if ratings_size < 3 do
+      1
+    else
+      inner_indexes = 1..(ratings_size - 2)
+
+      can_remove? = fn index ->
+        Enum.at(ratings, index + 1) - Enum.at(ratings, index - 1) < 4
+      end
+
+      optional_indexes = Enum.filter(inner_indexes, can_remove?)
+
+      reducer = fn index, acc ->
+        next_ratings = [Enum.at(ratings, index - 1) | Enum.slice(ratings, (index + 1)..-1)]
+        acc + cnt2(next_ratings)
+      end
+
+      Enum.count(optional_indexes) + Enum.reduce(optional_indexes, 0, reducer)
     end
   end
 end
