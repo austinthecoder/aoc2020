@@ -142,6 +142,11 @@ defmodule Aoc2020 do
     |> JoltageRatings.gather_distribution()
   end
 
+  def count_joltage_adapter_arrangements(joltage_adapter_data) do
+    JoltageRatings.from_string(joltage_adapter_data)
+    |> JoltageRatings.count_arrangements()
+  end
+
   ##########
 
   defp calc_seat_ids(batch_boarding_passes) do

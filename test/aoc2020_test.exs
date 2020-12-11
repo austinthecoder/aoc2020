@@ -121,6 +121,20 @@ defmodule Aoc2020Test do
     assert answer == 2100
   end
 
+  test "day 10, part 2, sample 1" do
+    answer =
+      read_file("joltage_adapters_sample1.txt") |> Aoc2020.count_joltage_adapter_arrangements()
+
+    assert answer == 8
+  end
+
+  test "day 10, part 2, sample 2" do
+    answer =
+      read_file("joltage_adapters_sample2.txt") |> Aoc2020.count_joltage_adapter_arrangements()
+
+    assert answer == 19208
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end
