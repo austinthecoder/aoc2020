@@ -135,6 +135,11 @@ defmodule Aoc2020Test do
     assert answer == 19208
   end
 
+  test "day 10, part 2" do
+    answer = read_file("joltage_adapters.txt") |> Aoc2020.count_joltage_adapter_arrangements()
+    assert answer == 16_198_260_678_656
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end
