@@ -141,13 +141,23 @@ defmodule Aoc2020Test do
   end
 
   test "day 11, part 1, sample" do
-    answer = read_file("seat_layout_sample.txt") |> Aoc2020.count_final_occupied_seats()
+    answer = read_file("seat_layout_sample.txt") |> Aoc2020.count_final_occupied_seats(1)
     assert answer == 37
   end
 
   test "day 11, part 1" do
-    answer = read_file("seat_layout.txt") |> Aoc2020.count_final_occupied_seats()
+    answer = read_file("seat_layout.txt") |> Aoc2020.count_final_occupied_seats(1)
     assert answer == 2113
+  end
+
+  test "day 11, part 2, sample" do
+    answer = read_file("seat_layout_sample.txt") |> Aoc2020.count_final_occupied_seats(2)
+    assert answer == 26
+  end
+
+  test "day 11, part 2" do
+    answer = read_file("seat_layout.txt") |> Aoc2020.count_final_occupied_seats(2)
+    assert answer == 1865
   end
 
   defp read_file(name) do

@@ -148,9 +148,9 @@ defmodule Aoc2020 do
     |> JoltageRatings.count_arrangements()
   end
 
-  def count_final_occupied_seats(seat_layout) do
+  def count_final_occupied_seats(seat_layout, type) do
     SeatGrid.from_string(seat_layout)
-    |> SeatGrid.find_stable()
+    |> SeatGrid.find_stable(type)
     |> SeatGrid.count_occupied()
   end
 

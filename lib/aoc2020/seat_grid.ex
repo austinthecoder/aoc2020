@@ -16,17 +16,15 @@ defmodule Aoc2020.SeatGrid do
     end)
   end
 
-  def find_stable(seat_grid) do
+  def find_stable(seat_grid, type) do
     reducer = fn {position, _value}, new_map ->
-      # If a seat is empty (L) and there are no occupied seats adjacent to it, the seat becomes occupied.
-      # If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the seat becomes empty.
       next_value =
         case seat_grid[position] do
           "L" ->
-            if any_adjacent_occupied?(seat_grid, position), do: "L", else: "#"
+            if occupy?(seat_grid, position, type), do: "#", else: "L"
 
           "#" ->
-            if count_adjacent_occupied(seat_grid, position) > 3, do: "L", else: "#"
+            if unoccupy?(seat_grid, position, type), do: "L", else: "#"
 
           value ->
             value
@@ -37,7 +35,7 @@ defmodule Aoc2020.SeatGrid do
 
     next_seat_grid = Enum.reduce(seat_grid, %{}, reducer)
 
-    if next_seat_grid == seat_grid, do: next_seat_grid, else: find_stable(next_seat_grid)
+    if next_seat_grid == seat_grid, do: next_seat_grid, else: find_stable(next_seat_grid, type)
   end
 
   def count_occupied(seat_grid) do
@@ -50,14 +48,66 @@ defmodule Aoc2020.SeatGrid do
 
   ##########
 
-  defp any_adjacent_occupied?(seat_grid, position) do
-    select_adjacent_positions(seat_grid, position)
-    |> Enum.any?(fn adjacent_position -> seat_grid[adjacent_position] == "#" end)
+  defp positions_to_consider(seat_grid, position, type) do
+    case type do
+      1 -> select_adjacent_positions(seat_grid, position)
+      2 -> select_seated_adjacent_positions(seat_grid, position)
+    end
   end
 
-  defp count_adjacent_occupied(seat_grid, position) do
-    select_adjacent_positions(seat_grid, position)
-    |> Enum.count(fn adjacent_position -> seat_grid[adjacent_position] == "#" end)
+  # If no adjacent seats are occupied
+  defp occupy?(seat_grid, position, type) do
+    positions = positions_to_consider(seat_grid, position, type)
+
+    occupied? = fn pos -> seat_grid[pos] == "#" end
+    !Enum.any?(positions, occupied?)
+  end
+
+  # If four or more adjacent seats are occupied
+  defp unoccupy?(seat_grid, position, type) do
+    positions = positions_to_consider(seat_grid, position, type)
+
+    num =
+      case type do
+        1 -> 3
+        2 -> 4
+      end
+
+    occupied? = fn pos -> seat_grid[pos] == "#" end
+    Enum.count(positions, occupied?) > num
+  end
+
+  defp select_seated_adjacent_positions(seat_grid, {col, row}) do
+    potential_positions = [
+      find_next_seated_position(seat_grid, {col, row}, {-1, -1}),
+      find_next_seated_position(seat_grid, {col, row}, {0, -1}),
+      find_next_seated_position(seat_grid, {col, row}, {1, -1}),
+      find_next_seated_position(seat_grid, {col, row}, {1, 0}),
+      find_next_seated_position(seat_grid, {col, row}, {1, 1}),
+      find_next_seated_position(seat_grid, {col, row}, {0, 1}),
+      find_next_seated_position(seat_grid, {col, row}, {-1, 1}),
+      find_next_seated_position(seat_grid, {col, row}, {-1, 0})
+    ]
+
+    nil? = fn position -> !position end
+
+    Enum.reject(potential_positions, nil?)
+  end
+
+  def find_next_seated_position(seat_grid, position, position_change) do
+    next_position = move_position(position, position_change)
+    next_value = seat_grid[next_position]
+
+    case next_value do
+      "L" -> next_position
+      "#" -> next_position
+      "." -> find_next_seated_position(seat_grid, next_position, position_change)
+      nil -> nil
+    end
+  end
+
+  defp move_position({col, row}, {col_change, row_change}) do
+    {col + col_change, row + row_change}
   end
 
   # starting top-left, going clockwise, only the ones on-grid
