@@ -1,73 +1,67 @@
 defmodule Aoc2020.SeatGrid do
   def from_string(string) do
-    String.split(string)
-    |> Enum.map(&String.split(&1, "", trim: true))
+    list =
+      String.split(string)
+      |> Enum.map(&String.split(&1, "", trim: true))
+
+    Enum.with_index(list)
+    |> Enum.reduce(%{}, fn {row_list, row}, acc1 ->
+      row_map =
+        Enum.with_index(row_list)
+        |> Enum.reduce(%{}, fn {value, col}, acc2 ->
+          Map.put(acc2, {col, row}, value)
+        end)
+
+      Map.merge(acc1, row_map)
+    end)
   end
 
   def find_stable(seat_grid) do
-    next_seat_grid = to_next(seat_grid)
+    reducer = fn {position, _value}, new_map ->
+      # If a seat is empty (L) and there are no occupied seats adjacent to it, the seat becomes occupied.
+      # If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the seat becomes empty.
+      next_value =
+        case seat_grid[position] do
+          "L" ->
+            if any_adjacent_occupied?(seat_grid, position), do: "L", else: "#"
+
+          "#" ->
+            if count_adjacent_occupied(seat_grid, position) > 3, do: "L", else: "#"
+
+          value ->
+            value
+        end
+
+      Map.put(new_map, position, next_value)
+    end
+
+    next_seat_grid = Enum.reduce(seat_grid, %{}, reducer)
 
     if next_seat_grid == seat_grid, do: next_seat_grid, else: find_stable(next_seat_grid)
   end
 
   def count_occupied(seat_grid) do
-    Enum.reduce(seat_grid, 0, fn row_obj, acc1 ->
-      acc1 +
-        Enum.reduce(row_obj, 0, fn value, acc2 ->
-          if value == "#", do: acc2 + 1, else: acc2
-        end)
-    end)
+    occupied? = fn {_position, value} ->
+      value == "#"
+    end
+
+    Enum.count(seat_grid, occupied?)
   end
 
   ##########
 
-  defp to_next(seat_grid) do
-    row_range = 0..(Enum.count(seat_grid) - 1)
-    col_range = 0..(Enum.count(Enum.at(seat_grid, 0)) - 1)
-
-    Enum.map(row_range, fn row ->
-      Enum.map(col_range, fn col ->
-        next_value(seat_grid, {col, row})
-      end)
-    end)
+  defp any_adjacent_occupied?(seat_grid, position) do
+    select_adjacent_positions(seat_grid, position)
+    |> Enum.any?(fn adjacent_position -> seat_grid[adjacent_position] == "#" end)
   end
 
-  # If a seat is empty (L) and there are no occupied seats adjacent to it, the seat becomes occupied.
-  # If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the seat becomes empty.
-  defp next_value(seat_grid, position) do
-    value = value_at(seat_grid, position)
-
-    adjacent_positions = select_adjacent_positions(seat_grid, position)
-
-    case value do
-      "L" ->
-        any_adjacent_occupied? =
-          adjacent_positions
-          |> Enum.any?(fn adjacent_position -> occupied?(seat_grid, adjacent_position) end)
-
-        if any_adjacent_occupied?, do: "L", else: "#"
-
-      "#" ->
-        adjacent_occupied_count =
-          adjacent_positions
-          |> Enum.count(fn adjacent_position -> occupied?(seat_grid, adjacent_position) end)
-
-        if adjacent_occupied_count > 3 do
-          "L"
-        else
-          "#"
-        end
-
-      _ ->
-        value
-    end
+  defp count_adjacent_occupied(seat_grid, position) do
+    select_adjacent_positions(seat_grid, position)
+    |> Enum.count(fn adjacent_position -> seat_grid[adjacent_position] == "#" end)
   end
 
   # starting top-left, going clockwise, only the ones on-grid
   defp select_adjacent_positions(seat_grid, {col, row}) do
-    max_col = (Enum.at(seat_grid, 0) |> Enum.count()) - 1
-    max_row = Enum.count(seat_grid) - 1
-
     potential_positions = [
       {col - 1, row - 1},
       {col, row - 1},
@@ -79,18 +73,10 @@ defmodule Aoc2020.SeatGrid do
       {col - 1, row}
     ]
 
-    on_grid? = fn {col, row} ->
-      col >= 0 && row >= 0 && col <= max_col && row <= max_row
+    on_grid? = fn position ->
+      seat_grid[position]
     end
 
     Enum.filter(potential_positions, on_grid?)
-  end
-
-  defp occupied?(seat_grid, position) do
-    value_at(seat_grid, position) == "#"
-  end
-
-  defp value_at(seat_grid, {col, row}) do
-    Enum.at(seat_grid, row) |> Enum.at(col)
   end
 end
