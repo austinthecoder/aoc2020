@@ -140,6 +140,16 @@ defmodule Aoc2020Test do
     assert answer == 16_198_260_678_656
   end
 
+  test "day 11, part 1, sample" do
+    answer = read_file("seat_layout_sample.txt") |> Aoc2020.count_final_occupied_seats()
+    assert answer == 37
+  end
+
+  test "day 11, part 1" do
+    answer = read_file("seat_layout.txt") |> Aoc2020.count_final_occupied_seats()
+    assert answer == 2113
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end

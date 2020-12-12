@@ -8,6 +8,7 @@ defmodule Aoc2020 do
     Passport,
     PasswordWithPolicy,
     Program,
+    SeatGrid,
     XmasNumbers
   }
 
@@ -145,6 +146,12 @@ defmodule Aoc2020 do
   def count_joltage_adapter_arrangements(joltage_adapter_data) do
     JoltageRatings.from_string(joltage_adapter_data)
     |> JoltageRatings.count_arrangements()
+  end
+
+  def count_final_occupied_seats(seat_layout) do
+    SeatGrid.from_string(seat_layout)
+    |> SeatGrid.find_stable()
+    |> SeatGrid.count_occupied()
   end
 
   ##########
