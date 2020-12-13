@@ -160,6 +160,26 @@ defmodule Aoc2020Test do
     assert answer == 1865
   end
 
+  test "day 12, part 1, sample" do
+    answer = read_file("nav_instructions_sample.txt") |> Aoc2020.calc_manhattan_distance(1)
+    assert answer == 25
+  end
+
+  test "day 12, part 1" do
+    answer = read_file("nav_instructions.txt") |> Aoc2020.calc_manhattan_distance(1)
+    assert answer == 1956
+  end
+
+  test "day 12, part 2, sample" do
+    answer = read_file("nav_instructions_sample.txt") |> Aoc2020.calc_manhattan_distance(2)
+    assert answer == 286
+  end
+
+  test "day 12, part 2" do
+    answer = read_file("nav_instructions.txt") |> Aoc2020.calc_manhattan_distance(2)
+    assert answer == 126_797
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end

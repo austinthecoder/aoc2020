@@ -5,8 +5,11 @@ defmodule Aoc2020 do
     BoardingPass,
     Grid,
     JoltageRatings,
+    NavInstructions,
+    NavInstructionsV2,
     Passport,
     PasswordWithPolicy,
+    Point,
     Program,
     SeatGrid,
     XmasNumbers
@@ -152,6 +155,21 @@ defmodule Aoc2020 do
     SeatGrid.from_string(seat_layout)
     |> SeatGrid.find_stable(type)
     |> SeatGrid.count_occupied()
+  end
+
+  def calc_manhattan_distance(nav_instructions, rules_version) do
+    point =
+      case rules_version do
+        1 ->
+          NavInstructions.from_string(nav_instructions)
+          |> NavInstructions.travel()
+
+        2 ->
+          NavInstructionsV2.from_string(nav_instructions)
+          |> NavInstructionsV2.travel()
+      end
+
+    Point.manhattan_distance(point)
   end
 
   ##########
