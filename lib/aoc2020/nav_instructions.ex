@@ -1,4 +1,6 @@
 defmodule Aoc2020.NavInstructions do
+  alias Aoc2020.{Point}
+
   def from_string(string) do
     String.split(string, "\n")
     |> Enum.reduce([], fn line, acc ->
@@ -13,33 +15,37 @@ defmodule Aoc2020.NavInstructions do
 
   defp travel([], point, _facing), do: point
 
-  defp travel([{action, value} | nav_instructions], {x, y}, facing) do
+  defp travel([{action, value} | nav_instructions], point, facing) do
+    action =
+      if action == "F" do
+        case facing do
+          :east -> "E"
+          :south -> "S"
+          :west -> "W"
+          :north -> "N"
+        end
+      else
+        action
+      end
+
     case action do
-      "N" ->
-        travel(nav_instructions, {x, y + value}, facing)
+      "E" ->
+        travel(nav_instructions, Point.go_right(point, value), facing)
 
       "S" ->
-        travel(nav_instructions, {x, y - value}, facing)
-
-      "E" ->
-        travel(nav_instructions, {x + value, y}, facing)
+        travel(nav_instructions, Point.go_down(point, value), facing)
 
       "W" ->
-        travel(nav_instructions, {x - value, y}, facing)
+        travel(nav_instructions, Point.go_left(point, value), facing)
+
+      "N" ->
+        travel(nav_instructions, Point.go_up(point, value), facing)
 
       "L" ->
-        travel(nav_instructions, {x, y}, orient(facing, action, value))
+        travel(nav_instructions, point, orient(facing, action, value))
 
       "R" ->
-        travel(nav_instructions, {x, y}, orient(facing, action, value))
-
-      "F" ->
-        case facing do
-          :east -> travel(nav_instructions, {x + value, y}, facing)
-          :north -> travel(nav_instructions, {x, y + value}, facing)
-          :west -> travel(nav_instructions, {x - value, y}, facing)
-          :south -> travel(nav_instructions, {x, y - value}, facing)
-        end
+        travel(nav_instructions, point, orient(facing, action, value))
     end
   end
 
