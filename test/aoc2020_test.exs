@@ -180,6 +180,16 @@ defmodule Aoc2020Test do
     assert answer == 126_797
   end
 
+  test "day 13, part 1, sample" do
+    answer = read_file("bus_notes_sample.txt") |> Aoc2020.find_bus_magic_number()
+    assert answer == 295
+  end
+
+  test "day 13, part 1" do
+    answer = read_file("bus_notes.txt") |> Aoc2020.find_bus_magic_number()
+    assert answer == 153
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end

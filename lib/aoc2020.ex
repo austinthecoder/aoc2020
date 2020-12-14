@@ -172,6 +172,32 @@ defmodule Aoc2020 do
     Point.manhattan_distance(point)
   end
 
+  def find_bus_magic_number(bus_notes) do
+    [estimate, bus_ids] = String.split(bus_notes, "\n")
+    estimate = String.to_integer(estimate)
+
+    bus_ids =
+      String.split(bus_ids, ",")
+      |> Enum.reduce([], fn bus_id, acc ->
+        if bus_id != "x", do: acc ++ [String.to_integer(bus_id)], else: acc
+      end)
+
+    bus_id_with_wait_mins_list =
+      Enum.reduce(bus_ids, [], fn bus_id, acc ->
+        wait_mins = ceil(estimate / bus_id) * bus_id - estimate
+        acc ++ [[bus_id, wait_mins]]
+      end)
+
+    [bus_id, wait_mins] =
+      Enum.sort(bus_id_with_wait_mins_list, fn [_bus_id, wait_mins],
+                                               [_other_bus_id, other_wait_mins] ->
+        wait_mins < other_wait_mins
+      end)
+      |> List.first()
+
+    bus_id * wait_mins
+  end
+
   ##########
 
   defp calc_seat_ids(batch_boarding_passes) do
