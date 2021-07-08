@@ -190,6 +190,16 @@ defmodule Aoc2020Test do
     assert answer == 153
   end
 
+  test "day 13, part 2, sample" do
+    answer = read_file("bus_notes_sample.txt") |> Aoc2020.find_earliest_bus_timestamp()
+    assert answer == 1_068_781
+  end
+
+  test "day 13, part 2" do
+    answer = read_file("bus_notes.txt") |> Aoc2020.find_earliest_bus_timestamp()
+    assert answer == 1
+  end
+
   defp read_file(name) do
     File.read!("test/files/#{name}") |> String.trim()
   end

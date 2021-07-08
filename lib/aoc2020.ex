@@ -198,7 +198,84 @@ defmodule Aoc2020 do
     bus_id * wait_mins
   end
 
+  @spec find_earliest_bus_timestamp(binary) :: any
+  def find_earliest_bus_timestamp(bus_notes) do
+    [_estimate, bus_ids] = String.split(bus_notes, "\n")
+
+    bus_id_and_position_list =
+      String.split(bus_ids, ",")
+      |> Enum.with_index()
+      |> Enum.reduce([], fn {bus_id, index}, acc ->
+        if bus_id != "x", do: acc ++ [[String.to_integer(bus_id), index]], else: acc
+      end)
+
+    IO.inspect(Enum.map(bus_id_and_position_list, fn [b, p] -> {b, p} end))
+
+    # find_timestamp(bus_id_and_position_list)
+
+    # find_multiplier(bus_id_and_position_list, 0, 0, 1)
+  end
+
+  def x(a) do
+    IO.inspect(a)
+
+    # r =
+    # ((((((((13 * a + 3) / 41 + 13) / 997 + 21) / 23 + 32) / 19 + 42) / 29 + 44) / 619 + 50) / 37 +
+    #  61) / 17
+
+    # r = (7 * a + 1) / 13
+    r1 = 7 * a
+    r2 = (7 * a + 1) / 13
+    r3 = (7 * a + 4) / 59
+    r4 = (7 * a + 6) / 31
+
+    l = [r1, r2, r3, r4]
+
+    if Enum.any?(l, fn r -> r != round(r) end) do
+      x(a + 1)
+    else
+      a
+    end
+  end
+
   ##########
+
+  defp find_multiplier(bus_id_and_position_list, index, total, multiplier) do
+    if index == Enum.count(bus_id_and_position_list) - 1 do
+      multiplier
+    else
+      [bus_id, position] = Enum.at(bus_id_and_position_list, index)
+
+      total = (total + position) / bus_id
+
+      if total == round(total) do
+        find_multiplier(bus_id_and_position_list, index + 1, total, multiplier)
+      else
+        find_multiplier(bus_id_and_position_list, 0, 1, multiplier + 1)
+      end
+    end
+  end
+
+  # defp find_timestamp(bus_id_and_position_list) do
+  #   [highest_bus_id, position] =
+  #     Enum.sort(bus_id_and_position_list, fn [bus_id, _position],
+  #                                            [other_bus_id, _other_position] ->
+  #       bus_id > other_bus_id
+  #     end)
+  #     |> List.first()
+
+  #   find_timestamp(bus_id_and_position_list, highest_bus_id, position)
+  # end
+
+  # defp find_timestamp(bus_id_and_position_list, step, timestamp) do
+  #   has_remainder? = fn [bus_id, position] ->
+  #     rem(timestamp + position, bus_id) != 0
+  #   end
+
+  #   if Enum.any?(bus_id_and_position_list, has_remainder?),
+  #     do: find_timestamp(bus_id_and_position_list, step, timestamp + step),
+  #     else: timestamp
+  # end
 
   defp calc_seat_ids(batch_boarding_passes) do
     String.split(batch_boarding_passes)
